@@ -1,9 +1,6 @@
 package vn.ngotien.jobhunter.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vn.ngotien.jobhunter.domain.User;
 import vn.ngotien.jobhunter.service.UserService;
 
@@ -15,8 +12,14 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/user/create")
+    @PostMapping("/user")
     public User createUser(@RequestBody User user) {
         return this.userService.handleCreateUser(user);
     }
+
+    @DeleteMapping("/user/{id}")
+    public void deleteUser(@PathVariable("id") long id) {
+        this.userService.handleDeleteUser(id);
+    }
+
 }
