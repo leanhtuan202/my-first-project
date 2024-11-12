@@ -1,8 +1,11 @@
 package vn.ngotien.jobhunter.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.ngotien.jobhunter.domain.User;
 import vn.ngotien.jobhunter.service.UserService;
+import vn.ngotien.jobhunter.service.error.IdInvalidException;
 
 import java.util.List;
 
@@ -14,28 +17,36 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/user")
-    public User createUser(@RequestBody User user) {
-        return this.userService.handleCreateUser(user);
+    @PostMapping("/users")
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        User newUser = this.userService.handleCreateUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
-    @DeleteMapping("/user/{id}")
-    public void deleteUser(@PathVariable("id") long id) {
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") long id) throws IdInvalidException {
+        if(id > 30){
+            throw new IdInvalidException("Id phai nho hon 31");
+        }
         this.userService.handleDeleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/user/{id}")
-    public User getUser(@PathVariable long id) {
-        return this.userService.handleFindUserById(id);
+    @GetMapping("/users/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable long id) {
+        User optionalUser = this.userService.handleFindUserById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(optionalUser);
     }
 
-    @GetMapping("/user")
-    public List<User> getUsers() {
-        return this.userService.findAllUsers();
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = this.userService.findAllUsers();
+        return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 
-    @PutMapping("/user")
-    public void updateUser(@RequestBody User user) {
+    @PutMapping("/users")
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
         this.userService.hanldleUpdateUser(user);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 }
