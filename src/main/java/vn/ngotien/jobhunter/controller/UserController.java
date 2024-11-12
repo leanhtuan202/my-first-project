@@ -26,7 +26,7 @@ public class UserController {
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") long id) throws IdInvalidException {
         if(id > 30){
-            throw new IdInvalidException("Id phai nho hon 31");
+            throw new IdInvalidException("Id not found");
         }
         this.userService.handleDeleteUser(id);
         return ResponseEntity.noContent().build();
